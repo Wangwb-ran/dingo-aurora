@@ -9,6 +9,7 @@ import subprocess
 import time
 import copy
 import uuid
+import string
 from typing import Dict, Optional, List
 from dingo_command.api.model.cluster import ClusterObject
 from dingo_command.api.model.instance import InstanceCreateObject
@@ -2371,11 +2372,11 @@ def add_existing_nodes(self, cluster_id, server_details, user, private_key: str 
                 def generate_random_string():
                     return ''.join(random.choices(string.ascii_letters + string.digits, k=4))
 
+                node_db = NodeInfo()
+                node_db.id = str(uuid.uuid4())
                 # 设置 node_db.name
                 node_db.name = f"{cluster_name}-existed-node-{generate_random_string()}"
 
-                node_db = NodeInfo()
-                node_db.id = str(uuid.uuid4())
                 node_db.cluster_id = cluster_id
                 node_db.server_id = server_detail.get("id")
                 node_db.cluster_name = cluster_name
@@ -2423,6 +2424,7 @@ def add_existing_nodes(self, cluster_id, server_details, user, private_key: str 
                 session.add(instance_db)
                 
                 node_instances.append({
+                    "name": node_db.name,
                     "node": node_db,
                     "instance": instance_db,
                     "server_detail": server_detail
@@ -2455,7 +2457,7 @@ def add_existing_nodes(self, cluster_id, server_details, user, private_key: str 
                     break
                     
             if ip_address:
-                node_names.append(f"{cluster_db.name}-existing-node-{index}:{ip_address}")
+                node_names.append(f"{ni['name']}:{ip_address}")
                 index += 1
 
         # 8. 执行Ansible扩容

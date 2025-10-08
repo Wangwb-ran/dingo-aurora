@@ -1197,6 +1197,7 @@ class TaskService:
 
     def handle_task(self, tasks, task_service, tasks_with_title, task_id=None):
         inprogress = False
+        is_started = False
         for task in task_service:
             for t in tasks:
                 if task_id and t.task_id != task_id:
@@ -1216,6 +1217,7 @@ class TaskService:
                     }
                     tasks_with_title.append(task_dict)
                     inprogress = True
+                    is_started = True
                     break
             if inprogress:
                 continue
@@ -1228,7 +1230,7 @@ class TaskService:
                 # 根据task名称匹配TaskMessage枚举值添加中文标题
                 'title': task.value
             }
-            if len(tasks) > 0:
+            if len(tasks) > 0 and not is_started:
                 task_dict['state'] = "success"
             tasks_with_title.append(task_dict)
         return tasks_with_title
