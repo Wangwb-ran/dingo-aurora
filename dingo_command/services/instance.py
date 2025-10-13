@@ -161,6 +161,7 @@ class InstanceService:
 
     def generate_k8s_nodes(self, cluster_info, cluster, k8s_nodes, forward_rules, forward_float_ip_id, cluster_info_db):
         node_db_list, instance_db_list = [], []
+        nova_client = NovaClient()
         if k8s_nodes:
             max_key = max(k8s_nodes, key=lambda k: int(k.split('-')[-1]))
             node_index = int(max_key.split('-')[-1]) + 1
@@ -435,6 +436,7 @@ class InstanceService:
 
     def convert_instance_todb(self, instance_info):
         instance_info_db_list = []
+        nova_client = NovaClient()
         operation_system = nova_client.get_image_info(instance_info.image_id)
         cpu, gpu, mem, disk = nova_client.get_flavor_info(instance_info.flavor_id)
         user, password, network_id, cluster_id, cluster_name, sshkey_name = "", "", "", "", "", ""

@@ -30,7 +30,7 @@ from dingo_command.db.engines.mysql import get_engine, get_session
 from dingo_command.services.custom_exception import Fail
 from dingo_command.services.system import SystemService
 
-from dingo_command.common.nova_client import nova_client
+from dingo_command.common.nova_client import NovaClient
 from dingo_command.services import CONF
 
 LOG = log.getLogger(__name__)
@@ -243,6 +243,7 @@ class NodeService:
         node_db_list, instance_db_list = [], []
         extra_dict = json.loads(cluster_info.extra)
         node_index = int(extra_dict.get("node_count", 0)) + 1
+        nova_client = NovaClient()
         for idx, node in enumerate(cluster.node_config):
             if node.role == "worker" and node.type == "vm":
                 cpu, gpu, mem, disk = nova_client.get_flavor_info(node.flavor_id)

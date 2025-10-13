@@ -27,7 +27,7 @@ from dingo_command.db.models.cluster.models import Cluster as ClusterDB
 from dingo_command.db.models.node.models import NodeInfo as NodeDB
 from dingo_command.db.models.instance.models import Instance as InstanceDB
 from dingo_command.common import neutron
-from dingo_command.common.nova_client import nova_client
+from dingo_command.common.nova_client import NovaClient
 from dingo_command.services.custom_exception import Fail
 from dingo_command.services.system import SystemService
 from dingo_command.services import CONF
@@ -72,6 +72,7 @@ class ClusterService:
         #  master_flavor_id) = self.get_master_flavor_info(master_flvaor)
         # master_operation_system, master_image_id = self.get_master_image_info(master_image)
         worker_node = []
+        nova_client = NovaClient()
         for idx, node in enumerate(cluster.node_config):
             if node.role == "master" and node.type == "vm":
                 cpu, gpu, mem, disk = nova_client.get_flavor_info(node.flavor_id)
@@ -854,6 +855,7 @@ class ClusterService:
         mem_total = 0
         gpu_total = 0
         gpu_mem_total = 0
+        nova_client = NovaClient()
         for idx, node in enumerate(cluster.node_config):
             # 在这里添加master节点的cpu、mem等信息
             if node.role == "master" and node.type == "vm":
@@ -890,6 +892,7 @@ class ClusterService:
         instance_db_list = []
         node_index = 1
         cluster_new = copy.deepcopy(cluster)
+        nova_client = NovaClient()
         for idx, node in enumerate(cluster.node_config):
             if node.role == "worker" and node.type == "vm":
                 cpu, gpu, mem, disk = nova_client.get_flavor_info(node.flavor_id)
