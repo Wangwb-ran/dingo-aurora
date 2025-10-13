@@ -55,7 +55,7 @@ class ClusterService:
 
     def get_az_value(self, node_type):
         """根据节点类型返回az值"""
-        return "nova" if node_type == "vm" else ""
+        return "" if node_type == "vm" else ""
 
     def generate_k8s_nodes(self, cluster: ClusterObject, k8s_masters, k8s_nodes):
         forward_float_ip_id = ""
@@ -715,7 +715,7 @@ class ClusterService:
                 elif not ipaddress.ip_network(subnet["cidr"]).is_private:
                     if public_floatingip_pool=="":
                         public_floatingip_pool=net["name"]
-                    public_subnetids = public_subnetids.append(subnet_id)
+                    public_subnetids.append(subnet_id)
         if public_floatingip_pool == "":
             public_floatingip_pool = floatingip_pool
         if not public_subnetids:

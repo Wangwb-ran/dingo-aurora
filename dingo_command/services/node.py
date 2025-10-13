@@ -79,7 +79,7 @@ class NodeService:
 
     def get_az_value(self, node_type):
         """根据节点类型返回az值"""
-        return "nova" if node_type == "vm" else ""
+        return "" if node_type == "vm" else ""
 
     # 查询资产列表
     @classmethod
